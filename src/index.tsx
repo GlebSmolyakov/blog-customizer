@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import { StrictMode, CSSProperties } from 'react';
+import { StrictMode, CSSProperties, useState, useCallback } from 'react';
 import clsx from 'clsx';
 
 import { Article } from './components/article/Article';
@@ -13,19 +13,36 @@ const domNode = document.getElementById('root') as HTMLDivElement;
 const root = createRoot(domNode);
 
 const App = () => {
+	const [currentStyles, setCurrentStyles] = useState(defaultArticleState);
+
+	const handleApplyStyles = useCallback(
+		(newStyles: typeof defaultArticleState) => {
+			setCurrentStyles(newStyles);
+		},
+		[]
+	);
+
+	const handleResetStyles = useCallback(() => {
+		setCurrentStyles(defaultArticleState);
+	}, []);
+
 	return (
 		<main
 			className={clsx(styles.main)}
 			style={
 				{
-					'--font-family': defaultArticleState.fontFamilyOption.value,
-					'--font-size': defaultArticleState.fontSizeOption.value,
-					'--font-color': defaultArticleState.fontColor.value,
-					'--container-width': defaultArticleState.contentWidth.value,
-					'--bg-color': defaultArticleState.backgroundColor.value,
+					'--font-family': currentStyles.fontFamilyOption.value,
+					'--font-size': currentStyles.fontSizeOption.value,
+					'--font-color': currentStyles.fontColor.value,
+					'--container-width': currentStyles.contentWidth.value,
+					'--bg-color': currentStyles.backgroundColor.value,
 				} as CSSProperties
 			}>
-			<ArticleParamsForm />
+			{}
+			<ArticleParamsForm
+				onApply={handleApplyStyles}
+				onReset={handleResetStyles}
+			/>
 			<Article />
 		</main>
 	);
